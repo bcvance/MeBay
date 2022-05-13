@@ -1,0 +1,61 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    {% if message %}
+        {% for message in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if listings %} 
+        {% for listing in listings %} 
+        <div class="card border-light mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+              <div class="col-md-4">
+                  <form id="listing_card_{{ listing.listing.id }}" action="{% url 'listing' listing.listing.id %}">
+                  </form>
+                <img src="{{ listing.listing.image.url }}" class="img-fluid rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ listing.listing.id }}')">
+              </div>
+              <div class="col-md-8">
+                    <div class="card-body">
+                        <form action="{% url 'listing' listing.listing.id %}">
+                            <button type="submit" class="text-button card-item-name">{{ listing.listing.name }}</button>
+                        </form>
+                        {% if not listing.highest_bid %}
+                            <p class="card-text font-weight-bold">No Bids Yet, Bids Starting at ${{ listing.price }}</p>
+                        {% else %}
+                            <p class="card-text font-weight-bold">Current Highest Bid: ${{ listing.highest_bid }}</p>
+                        {% endif %}
+                        <p class="card-text">{{ listing.listing.desc }}</p>
+                        <p class="card-text"><small class="text-muted">Posted {{ listing.listing.list_date }} by {{ listing.listing.poster }}</small></p>
+                        {% if user.is_authenticated %}
+                        <div class="bottom-btns">
+                                {% if listing.listing.poster.username == user.username %}
+                                    <a href="{% url 'listings' %}" class="bottom-btn text-button">Go to My Listings</a>
+                                {% else %}
+                                    {% if not listing.watchlist %}
+                                        <form method="post" action="watch_add">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="listing_id" value="{{ listing.listing.id }}">
+                                            <button type="submit" class="text-button" id="delete_btn">Add to Watchlist</button>
+                                        </form>
+                                    {% else %}
+                                    <form method="post" action="watch_del">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="listing_id" value="{{ listing.listing.id }}">
+                                        <button type="submit" class="text-button" id="delete_btn">Remove From Watchlist</button>
+                                    </form>
+                                    {% endif %}
+                                {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+            {% endfor %}
+        {% endif %}
+{% endblock %}

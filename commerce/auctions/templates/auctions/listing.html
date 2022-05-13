@@ -1,0 +1,85 @@
+{% extends "auctions/layout.html" %}
+
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <img class="listing_img" src="{{ listing.image.url }}" alt="item image">
+            </div>
+            <div class="col listing">
+                <h5>{{listing.name}}</h5>
+                <hr>
+                <p><small class="text-muted">Item Description</small></p>
+                <p>{{ listing.desc }}</p>
+                <hr>
+                {% if not highest_bid %}
+                    <p>No Bids Yet, Bids Starting at ${{ price_formatted }}</p>
+                {% else %}
+                    <p>Current Highest Bid: ${{ highest_bid }}</p>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    {% if listing.poster.username == user.username %}
+                        <a href="{% url 'listings' %}" class="bottom-btn">Go to My Listings</a>
+                    {% else %}
+                        <form action="{% url 'bid' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                            <input type="text" name="bid_amount" placeholder="Type Bid Amount">
+                            <button class="btn btn-dark my-4" type="submit">Submit Bid</button>
+                        </form>
+                        {% if not watchlist %}
+                            <form method="post" action="{% url 'watchlist' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                <button type="submit" class="btn btn-dark">Add to Watchlist</button>
+                            </form>
+                        {% else %}
+                            <form method="post" action="watch_del">
+                                {% csrf_token %}
+                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                <button type="submit" class="btn btn-dark" id="delete_btn">Remove From Watchlist</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                <p><a href="{% url 'login' %}" class="bottom-btn">Login</a> or <a href="{% url 'register' %}" class="bottom-btn">Register</a> to bid on this item.</p>
+                {% endif %}
+                <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
+                <section id="comments">
+                    <h3>Comments</h3>
+                    {% if not user.is_authenticated %}
+                        <p class="text-muted"><a href="{% url 'login' %}">Sign in</a> to leave a comment.</p>
+                    {% else %}
+                        {% if not comments %}
+                        <p class="text-muted">Be the first to leave a comment.</p>
+                        {% else %}
+                        {% for comment in comments %}
+                        <div class="media">
+                            <!-- profile image: <img src="https://placehold.it/64x64" alt=""> -->
+                            <div class="media-body">
+                                <p>{{ comment.poster }}</p>
+                                <p>
+                                    {{ comment.content }}
+                                </p>
+                                <p class="card-text"><small class="text-muted">Posted {{ comment.comment_date_time }}</small></p>
+                            </div>
+                        </div>
+                        <hr>
+                        {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                    <form action="comment" method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                            <label for="comment">Your Comment:</label>
+                            <textarea class="form-control" placeholder="Write Your Comment Here" id="comment" name="comment" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-dark">Submit</button>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+{% endblock %}
