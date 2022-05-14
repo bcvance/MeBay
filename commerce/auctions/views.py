@@ -11,15 +11,17 @@ from .models import User, Listing, Bid, Comment, WatchItem
 from datetime import date
 from .utils import format_price, is_on_watchlist, get_highest_bid
 from django.db.models.base import ObjectDoesNotExist
+from itertools import zip_longest
 
 def index(request):
     listings_data = []
-    listings_list = list(Listing.objects.all())
+    listings_list = list(Listing.objects.filter(active = True))
     for listing in listings_list:
         bid_string = str(listing.starting_bid)
         price_formatted = format_price(bid_string)
         watchlist = is_on_watchlist(request, listing)
-        highest_bid = format_price(get_highest_bid(listing.id))
+        highest_bid, highest_bidder = get_highest_bid(listing.id)
+        highest_bid = format_price(highest_bid)
         listings_data.append({
             "listing": listing,
             "price": price_formatted,
@@ -50,6 +52,14 @@ def bid(request):
                 new_bid = Bid(amount = float(this_bid), listing = Listing.objects.get(id=listing_id), bidder = User.objects.get(id=request.user.id))
                 new_bid.save()
     return redirect(request.META['HTTP_REFERER'])
+
+def close(request):
+    listing = Listing.objects.get(id=request.POST["listing_id"])
+    listing.active = False
+    if Bid.objects.filter(listing = listing).exists():
+        listing.winner = Bid.objects.filter(listing=listing).last().bidder.id
+    listing.save()
+    return HttpResponseRedirect(reverse("listings"))
 
 def comment(request):
     if request.method == "POST":
@@ -84,7 +94,8 @@ def listing(request, item_id):
     bid_string = str(listing.starting_bid)
     price_formatted = format_price(bid_string)
     watchlist = is_on_watchlist(request, listing)
-    highest_bid = format_price(get_highest_bid(item_id))
+    highest_bid, highest_bidder = get_highest_bid(item_id)
+    highest_bid = format_price(highest_bid)
     comments = list(Comment.objects.filter(listing = Listing.objects.get(id = item_id)))
     comments.reverse()
     return render(request, "auctions/listing.html", context={
@@ -92,18 +103,26 @@ def listing(request, item_id):
         "price_formatted": price_formatted,
         "watchlist": watchlist,
         "highest_bid": highest_bid,
-        "comments": comments
+        "highest_bidder": highest_bidder,
+        "comments": comments,
+        "user_id": request.user.id
     })
 
 
-
-    
-
 def listings(request):
     user = User.objects.filter(id=request.user.id).first()
-    my_listings_list = list(Listing.objects.filter(poster=user))
+    my_listings = Listing.objects.filter(poster=user)
+    my_wins = Listing.objects.filter(winner = request.user.id)
+    if not my_wins.exists():
+        my_wins_list = [-1]
+    else:
+        my_wins_list = list(my_wins)
+    if not my_listings.exists():
+        my_listings_list = [-1]
+    else:
+        my_listings_list = list(my_listings)
     return render(request, "auctions/listings.html", context={
-        "my_listings_list": my_listings_list
+        "my_listings_list": zip_longest(my_listings_list, my_wins_list, fillvalue=None)
     })
 
 def login_view(request):

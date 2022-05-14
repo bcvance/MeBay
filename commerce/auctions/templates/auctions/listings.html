@@ -6,38 +6,74 @@
             <a href="{% url 'create' %}" class="nav-link">Create New Listing</a>
         </li>
     </ul>
+    
     <div class="container">
         <div class="row">
             <div class="col">
                 <h5 class="listings-col">My Listings</h5>
-                {% if my_listings_list %} 
-                    {% for listing in my_listings_list %} 
+            </div>
+            <div class="col">
+                <h5 class="listings-col">My Wins</h5>
+            </div>
+        </div>
+        {% for listing, win in my_listings_list %}  
+            <div class="row">
+                <div class="col">
+                    {% if listing == -1 %}
+                        <h3>You have no listings.</h3>
+                    {% else %}
+
                         <div class="card mb-3" style="max-width: 540px;">
                             <div class="row g-0">
                                 <div class="col-md-4">
-                                    <img src="{{ listing.image.url }}" class="img-fluid rounded-start" alt="...">
+                                    <form id="listing_card_{{ listing.id }}" action="{% url 'listing' listing.id %}">
+                                    </form>
+                                    <img src="{{ listing.image.url }}" class="img-fluid rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ listing.id }}')">
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
-                                    <h5 class="card-title">{{ listing.name }}</h5>
-                                    <p class="card-text">{{ listing.desc }}</p>
-                                    <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
-                                    <form method="post" action="delete">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                        <button type="submit" id="delete_btn">Delete Listing</button>
-                                    </form>
-
-
+                                        <form action="{% url 'listing' listing.id %}">
+                                            <button type="submit" class="card-item-name text-button">{{ listing.name }}</button>
+                                        </form>
+                                        <p class="card-text">{{ listing.desc }}</p>
+                                        <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
+                                        <form method="post" action="delete">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                            <button type="submit" class="btn btn-dark" id="delete_btn">Delete Listing</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                        You have no current listings.
+                </div>
                 {% endif %}
+                <div class="col">
+                    {% if win == -1 %}
+                        <h3>You have no wins.</h3>
+                    {% elif win %}
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <form id="listing_card_{{ win.id }}" action="{% url 'listing' win.id %}">
+                                    </form>
+                                    <img src="{{ win.image.url }}" class="img-fluid rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ win.id }}')">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <form action="{% url 'listing' win.id %}">
+                                            <button type="submit" class="card-item-name text-button">{{ win.name }}</button>
+                                        </form>
+                                        <p class="card-text">{{ win.desc }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
             </div>
+    </div>
+        {% endfor %}
         </div>
     </div>
 {% endblock %}

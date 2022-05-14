@@ -23,5 +23,5 @@ def is_on_watchlist(request, listing):
 def get_highest_bid(listing_id):
     highest_bid = Bid.objects.filter(listing = Listing.objects.get(id = listing_id)).last()
     if highest_bid:
-        return highest_bid.amount
-    return False
+        return highest_bid.amount, highest_bid.bidder
+    return False, False

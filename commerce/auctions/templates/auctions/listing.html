@@ -12,40 +12,64 @@
                 <hr>
                 <p><small class="text-muted">Item Description</small></p>
                 <p>{{ listing.desc }}</p>
+                <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
                 <hr>
-                {% if not highest_bid %}
+                {% if not highest_bid and listing.active %}
                     <p>No Bids Yet, Bids Starting at ${{ price_formatted }}</p>
-                {% else %}
+                {% elif highest_bid and listing.active %}
                     <p>Current Highest Bid: ${{ highest_bid }}</p>
+                    {% if user_id == highest_bidder.id %}
+                        <p style="color: green;">You are currently the highest bidder.</p>
+                    {% endif %}
+                {% elif not highest_bid and not listing.active %}
+                    <p>Nobody bid on this item :(</p>
+                {% elif highest_bid and not listing.active %}
+                    <p>Sold for ${{ highest_bid }} to {{ highest_bidder }}.</p>
                 {% endif %}
                 {% if user.is_authenticated %}
                     {% if listing.poster.username == user.username %}
-                        <a href="{% url 'listings' %}" class="bottom-btn">Go to My Listings</a>
-                    {% else %}
-                        <form action="{% url 'bid' %}" method="post">
+                        {% if listing.active %}
+                        <form action="{% url 'close' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                            <input type="text" name="bid_amount" placeholder="Type Bid Amount">
-                            <button class="btn btn-dark my-4" type="submit">Submit Bid</button>
+                            <input type="hidden" value="{{ listing.id }}" name="listing_id">
+                            <button type="submit" class="text-button">Close this listing</button>
                         </form>
-                        {% if not watchlist %}
-                            <form method="post" action="{% url 'watchlist' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                <button type="submit" class="btn btn-dark">Add to Watchlist</button>
-                            </form>
                         {% else %}
-                            <form method="post" action="watch_del">
+                            <p class="text-muted">This Listing Has Closed</p>
+                        {% endif %}
+                        <p><a href="{% url 'listings' %}" class="bottom-btn">Go to My Listings</a></p>
+                    {% else %}
+                        {% if listing.active %}
+                            <form action="{% url 'bid' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                <button type="submit" class="btn btn-dark" id="delete_btn">Remove From Watchlist</button>
+                                <input type="text" name="bid_amount" placeholder="Type Bid Amount">
+                                <button class="btn btn-dark my-4" type="submit">Submit Bid</button>
                             </form>
+                            {% if not watchlist %}
+                                <form method="post" action="{% url 'watchlist' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                    <button type="submit" class="btn btn-dark">Add to Watchlist</button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="watch_del">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                    <button type="submit" class="btn btn-dark" id="delete_btn">Remove From Watchlist</button>
+                                </form>
+                            {% endif %}
+                        {% else %}
+                            <p class="text-muted">This listing has been closed.</p>
+                            {% if user_id == highest_bidder.id %}
+                                <p style="color: green;">Congratulations! You won the auction!</p>
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 {% else %}
                 <p><a href="{% url 'login' %}" class="bottom-btn">Login</a> or <a href="{% url 'register' %}" class="bottom-btn">Register</a> to bid on this item.</p>
                 {% endif %}
-                <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
+                <hr>
                 <section id="comments">
                     <h3>Comments</h3>
                     {% if not user.is_authenticated %}
@@ -68,7 +92,6 @@
                         <hr>
                         {% endfor %}
                         {% endif %}
-                    {% endif %}
                     <form action="comment" method="post">
                         {% csrf_token %}
                         <div class="form-group">
@@ -78,6 +101,7 @@
                         </div>
                         <button type="submit" class="btn btn-dark">Submit</button>
                     </form>
+                    {% endif %}
                 </section>
             </div>
         </div>
