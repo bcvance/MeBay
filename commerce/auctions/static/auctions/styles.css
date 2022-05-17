@@ -1,5 +1,13 @@
+.active {
+    color: green;
+}
+
 body {
     padding: 10px;
+}
+
+.closed {
+    color: red;
 }
 
 p {
@@ -37,4 +45,8 @@ button.text-button {
 
 .index_listing-img{
     cursor: pointer;
+}
+
+.yellow {
+    color: #E1AA19;
 }

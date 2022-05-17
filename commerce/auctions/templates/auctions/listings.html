@@ -36,12 +36,19 @@
                                             <button type="submit" class="card-item-name text-button">{{ listing.name }}</button>
                                         </form>
                                         <p class="card-text">{{ listing.desc }}</p>
+                                        {% if listing.active %}
+                                            <p class="active">Active</p>
+                                        {% else %} 
+                                            <p class="closed">Closed</p>
+                                        {% endif %}
                                         <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
-                                        <form method="post" action="delete">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                            <button type="submit" class="btn btn-dark" id="delete_btn">Delete Listing</button>
-                                        </form>
+                                        {% if listing.active %}
+                                            <form method="post" action="delete">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                                <button type="submit" class="btn btn-dark" id="delete_btn">Delete Listing</button>
+                                            </form>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

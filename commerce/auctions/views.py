@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from .forms import ListingForm
-from .models import User, Listing, Bid, Comment, WatchItem
+from .models import User, Listing, Bid, Comment, WatchItem, Category
 from datetime import date
 from .utils import format_price, is_on_watchlist, get_highest_bid
 from django.db.models.base import ObjectDoesNotExist
@@ -53,6 +53,20 @@ def bid(request):
                 new_bid.save()
     return redirect(request.META['HTTP_REFERER'])
 
+def categories(request):
+    categories_list = list(Category.objects.all())
+    return render(request, "auctions/categories.html", context={
+        "categories_list": categories_list
+    })
+
+def category(request, category_id):
+    category = Category.objects.get(id=category_id)
+    listings_list = list(Listing.objects.filter(categories = category, active = True))
+    return render(request, "auctions/category.html", context={
+        "listings_list": listings_list,
+        "category": category
+    })
+
 def close(request):
     listing = Listing.objects.get(id=request.POST["listing_id"])
     listing.active = False
@@ -75,6 +89,7 @@ def create(request):
             model_instance = form.save(commit=False)
             model_instance.poster = User.objects.filter(id = request.user.id).first()
             model_instance.save()
+            form.save_m2m()
         return HttpResponseRedirect(reverse("index"))
     form = ListingForm()
     listings = Listing.objects.all()
@@ -86,7 +101,7 @@ def create(request):
 def delete(request):
     if request.method == "POST":
         listing_id = request.POST["listing_id"]
-        Listing.objects.filter(id=listing_id).delete()
+        Listing.objects.get(id=listing_id).delete()
         return HttpResponseRedirect(reverse("listings"))
 
 def listing(request, item_id):

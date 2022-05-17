@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from django.forms import CharField
 
 # from commerce.commerce.settings import MEDIA_URL
 
@@ -20,6 +21,11 @@ class User(AbstractUser):
     username = models.CharField(max_length=64, unique=True)
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=30, unique=True)
+
+    def __str__(self) -> str:
+        return f"{self.name}"
 
 class Listing(models.Model):
     list_date = models.DateField(auto_now_add=True)
@@ -29,7 +35,7 @@ class Listing(models.Model):
     name = models.CharField(max_length=64, default="Unnamed Listing")
     desc = models.CharField(max_length=500, blank=True, null=True, default="")
     image = models.ImageField(upload_to=image_directory_path, storage=image_storage, null=True)
-    category = models.CharField(max_length=20, blank=True, null=True)
+    categories = models.ManyToManyField(Category, related_name="listings")
     active = models.BooleanField(default=True)
     winner = models.IntegerField(blank=True, null=True)
 
@@ -59,6 +65,7 @@ class Comment(models.Model):
 class WatchItem(models.Model):
     watcher = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     item = models.ForeignKey(Listing, on_delete=models.CASCADE, blank=True, null=True)
+
 
 
 

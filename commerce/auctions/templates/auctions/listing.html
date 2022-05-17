@@ -24,7 +24,7 @@
                 {% elif not highest_bid and not listing.active %}
                     <p>Nobody bid on this item :(</p>
                 {% elif highest_bid and not listing.active %}
-                    <p>Sold for ${{ highest_bid }} to {{ highest_bidder }}.</p>
+                    <p>Sold for ${{ highest_bid }} to <span class="yellow">{{ highest_bidder }}</span>.</p>
                 {% endif %}
                 {% if user.is_authenticated %}
                     {% if listing.poster.username == user.username %}
@@ -62,7 +62,7 @@
                         {% else %}
                             <p class="text-muted">This listing has been closed.</p>
                             {% if user_id == highest_bidder.id %}
-                                <p style="color: green;">Congratulations! You won the auction!</p>
+                                <p class="active">Congratulations! You won the auction!</p>
                             {% endif %}
                         {% endif %}
                     {% endif %}
