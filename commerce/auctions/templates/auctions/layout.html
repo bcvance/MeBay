@@ -25,7 +25,7 @@
                     <a class="nav-link" href="{% url 'listings' %}">My Listings</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist</a>
+                    <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist <span class="text-light bg-dark px-2 rounded">{% block watch_num %}{% endblock watch_num %}</span></a>
                 </li>
                 <li class="nav-item">
                     <a href="{% url 'categories' %}" class="nav-link">Categories</a>

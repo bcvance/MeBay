@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from .forms import ListingForm
 from .models import User, Listing, Bid, Comment, WatchItem, Category
 from datetime import date
-from .utils import format_price, is_on_watchlist, get_highest_bid
+from .utils import format_price, is_on_watchlist, get_highest_bid, get_num_watch_items
 from django.db.models.base import ObjectDoesNotExist
 from itertools import zip_longest
 
@@ -22,6 +22,7 @@ def index(request):
         watchlist = is_on_watchlist(request, listing)
         highest_bid, highest_bidder = get_highest_bid(listing.id)
         highest_bid = format_price(highest_bid)
+        watch_items = get_num_watch_items(request)
         listings_data.append({
             "listing": listing,
             "price": price_formatted,
@@ -29,7 +30,8 @@ def index(request):
             "highest_bid": highest_bid
         })
     return render(request, "auctions/index.html", {
-        "listings": listings_data
+        "listings": listings_data,
+        "watch_items": watch_items
     })
 
 def bid(request):
@@ -55,16 +57,20 @@ def bid(request):
 
 def categories(request):
     categories_list = list(Category.objects.all())
+    watch_items = get_num_watch_items(request)
     return render(request, "auctions/categories.html", context={
-        "categories_list": categories_list
+        "categories_list": categories_list,
+        "watch_items": watch_items
     })
 
 def category(request, category_id):
     category = Category.objects.get(id=category_id)
     listings_list = list(Listing.objects.filter(categories = category, active = True))
+    watch_items = get_num_watch_items(request)
     return render(request, "auctions/category.html", context={
         "listings_list": listings_list,
-        "category": category
+        "category": category,
+        "watch_items": watch_items
     })
 
 def close(request):
@@ -93,9 +99,11 @@ def create(request):
         return HttpResponseRedirect(reverse("index"))
     form = ListingForm()
     listings = Listing.objects.all()
+    watch_items = get_num_watch_items(request)
     return render(request, "auctions/create.html", context={
         "listings":listings,
-        "form": form
+        "form": form,
+        "watch_items": watch_items
     })
 
 def delete(request):
@@ -113,6 +121,7 @@ def listing(request, item_id):
     highest_bid = format_price(highest_bid)
     comments = list(Comment.objects.filter(listing = Listing.objects.get(id = item_id)))
     comments.reverse()
+    watch_items = get_num_watch_items(request)
     return render(request, "auctions/listing.html", context={
         "listing": listing,
         "price_formatted": price_formatted,
@@ -120,7 +129,8 @@ def listing(request, item_id):
         "highest_bid": highest_bid,
         "highest_bidder": highest_bidder,
         "comments": comments,
-        "user_id": request.user.id
+        "user_id": request.user.id,
+        "watch_items": watch_items
     })
 
 
@@ -136,8 +146,10 @@ def listings(request):
         my_listings_list = [-1]
     else:
         my_listings_list = list(my_listings)
+    watch_items = get_num_watch_items(request)
     return render(request, "auctions/listings.html", context={
-        "my_listings_list": zip_longest(my_listings_list, my_wins_list, fillvalue=None)
+        "my_listings_list": zip_longest(my_listings_list, my_wins_list, fillvalue=None),
+        "watch_items": watch_items
     })
 
 def login_view(request):
@@ -213,8 +225,10 @@ def watchlist(request):
     for item in watch_items_list:
         bid_string = str(item.item.starting_bid)
         prices_formatted.append(format_price(bid_string))
+    watch_items = get_num_watch_items(request)
     return render(request, "auctions/watchlist.html", context={
-        "watch_items_list": zip(watch_items_list, prices_formatted)
+        "watch_items_list": zip(watch_items_list, prices_formatted),
+        "watch_items": watch_items
     })
 
 

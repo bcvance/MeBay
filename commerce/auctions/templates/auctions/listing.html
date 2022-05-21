@@ -1,5 +1,8 @@
 {% extends "auctions/layout.html" %}
 
+{% block watch_num %}
+    {{ watch_items }}
+{% endblock %}
 
 {% block body %}
     <div class="container">
@@ -70,8 +73,13 @@
                 <p><a href="{% url 'login' %}" class="bottom-btn">Login</a> or <a href="{% url 'register' %}" class="bottom-btn">Register</a> to bid on this item.</p>
                 {% endif %}
                 <hr>
+            </div>
+        </div>
+            <div class="row" style="width: 100%; display: inline-block;">
                 <section id="comments">
                     <h3>Comments</h3>
+                    <hr style="height: 1px;
+                    background-color: #8c8c8c;">
                     {% if not user.is_authenticated %}
                         <p class="text-muted"><a href="{% url 'login' %}">Sign in</a> to leave a comment.</p>
                     {% else %}
@@ -97,7 +105,7 @@
                         <div class="form-group">
                             <input type="hidden" name="listing_id" value="{{ listing.id }}">
                             <label for="comment">Your Comment:</label>
-                            <textarea class="form-control" placeholder="Write Your Comment Here" id="comment" name="comment" rows="5" required></textarea>
+                            <textarea class="form-control" placeholder="Write Your Comment Here" id="comment" name="comment" rows="5" style="width: 60%;"required></textarea>
                         </div>
                         <button type="submit" class="btn btn-dark">Submit</button>
                     </form>

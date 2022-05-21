@@ -15,6 +15,10 @@ p {
     margin-bottom: 3px;
 }
 
+.rounded {
+    border-radius: 20px;
+}
+
 .listings-col {
     text-decoration: underline;
 }

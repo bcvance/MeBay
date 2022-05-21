@@ -1,5 +1,9 @@
 {% extends "auctions/layout.html" %}
 
+{% block watch_num %}
+    {{ watch_items }}
+{% endblock %}
+
 {% block body %}
     <ul class="nav">
         <li class="nav_item">
@@ -76,11 +80,12 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
                     {% endif %}
+                </div>
             </div>
-    </div>
+
         {% endfor %}
+    </div>
         </div>
     </div>
 {% endblock %}

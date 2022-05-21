@@ -1,5 +1,10 @@
 {% extends "auctions/layout.html" %}
 
+{% block watch_num %}
+    {{ watch_items }}
+{% endblock %}
+
+
 {% block body %}
     <h5>My Watchlist Items</h5>
     {% if watch_items_list %} 

@@ -1,4 +1,4 @@
-from .models import WatchItem, Listing, Bid
+from .models import WatchItem, Listing, Bid, User
 from django.db.models.base import ObjectDoesNotExist
 
 def format_price(bid_string):
@@ -25,3 +25,8 @@ def get_highest_bid(listing_id):
     if highest_bid:
         return highest_bid.amount, highest_bid.bidder
     return False, False
+
+def get_num_watch_items(request):
+    user_id = request.user.id
+    num_items = WatchItem.objects.filter(watcher = User.objects.get(id = user_id)).count()
+    return num_items

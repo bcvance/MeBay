@@ -1,5 +1,9 @@
 {% extends "auctions/layout.html" %}
 
+{% block watch_num %}
+    {{ watch_items }}
+{% endblock %}
+
 {% block body %}
     <h2>Active Listings</h2>
     {% if message %}
