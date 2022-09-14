@@ -1,9 +1,22 @@
-.active {
-    color: green;
+@media (max-width: 768px) {
+    #user-icon {
+        position: absolute;
+        right: 95px;
+        top: 16px;
+    }
 }
 
-body {
-    padding: 10px;
+@media (min-width: 768px) {
+    #user-icon {
+        position: absolute;
+        left: 110px;
+        top: 16px;
+    }
+}
+
+
+.active {
+    color: green;
 }
 
 .closed {
@@ -47,10 +60,35 @@ button.text-button {
     max-height: 500px;
 }
 
-.index_listing-img{
+.index_listing_img:hover{
     cursor: pointer;
+}
+
+.index-image {
+    object-fit: cover;
 }
 
 .yellow {
     color: #E1AA19;
+}
+
+
+.no-underline {
+    text-decoration: none;
+    color: white;
+}
+
+.no-underline:hover {
+    text-decoration: underline;
+    color: white;
+}
+
+#brand {
+    text-decoration: none;
+    color: white;
+}
+
+#brand:hover {
+    text-decoration: none;
+    color: white;
 }

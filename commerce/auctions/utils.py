@@ -27,6 +27,9 @@ def get_highest_bid(listing_id):
     return False, False
 
 def get_num_watch_items(request):
+    # check if user is logged in before querying for items on watchlist
+    if not request.user.is_authenticated:
+        return 0
     user_id = request.user.id
     num_items = WatchItem.objects.filter(watcher = User.objects.get(id = user_id)).count()
     return num_items

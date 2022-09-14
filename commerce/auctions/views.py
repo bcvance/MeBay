@@ -16,12 +16,13 @@ from itertools import zip_longest
 def index(request):
     listings_data = []
     listings_list = list(Listing.objects.filter(active = True))
+    # page information about listing/number of posts on watchlist/etc
     for listing in listings_list:
         bid_string = str(listing.starting_bid)
         price_formatted = format_price(bid_string)
-        watchlist = is_on_watchlist(request, listing)
         highest_bid, highest_bidder = get_highest_bid(listing.id)
         highest_bid = format_price(highest_bid)
+        watchlist = is_on_watchlist(request, listing)
         watch_items = get_num_watch_items(request)
         listings_data.append({
             "listing": listing,
@@ -203,6 +204,10 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def user_page(request, user_id):
+    # for now just redirect to index, later create user profile page
+    return HttpResponseRedirect(reverse("index"))
 
 def watch_del(request):
     listing_id = request.POST["listing_id"]
