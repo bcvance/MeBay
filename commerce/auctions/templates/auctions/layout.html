@@ -8,56 +8,85 @@
         <link href="{% static 'auctions/styles.css' %}" rel="stylesheet">
     </head>
     <body>
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-            <div class="container-fluid">
-                <div class="site-title navbar-brand">
-                    <a href="{% url 'index' %}" id="brand" class="d-inline-block align-text-top">MeBay</a>
-                </div>
-                <div id="user-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" class="bi bi-person-fill d-inline-block align-text-top" viewBox="0 0 16 16">
-                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                      </svg>
-                    {% if user.is_authenticated %}
-                        <a class="no-underline d-inline-block align-text-top" href="{% url 'user' user.id %}">{{ user.username }}</a>
-                    {% else %} 
-                        <a class="no-underline d-inline-block align-text-top" href="{% url 'login' %}">Not logged in.</a>
-                    {% endif %}
-                </div>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
-                        </li>
+        <div class="body-container">
+            <nav class="navbar navbar-expand-md navbar-dark">
+                <div class="container-fluid">
+                    <div class="site-title navbar-brand">
+                        <a href="{% url 'index' %}" id="brand" class="d-inline-block align-text-top">MeBay</a>
+                    </div>
+                    <div id="user-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" class="bi bi-person-fill d-inline-block align-text-top" viewBox="0 0 16 16">
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                          </svg>
                         {% if user.is_authenticated %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'listings' %}">My Listings</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist <span class="text-light bg-dark px-2 rounded">{% block watch_num %}{% endblock watch_num %}</span></a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'categories' %}" class="nav-link">Categories</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
-                            </li>
-                        {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'login' %}">Log In</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'register' %}">Register</a>
-                            </li>
+                            <a class="no-underline d-inline-block align-text-top" href="{% url 'listings' %}">{{ user.username }}</a>
+                        {% else %} 
+                            <a class="no-underline d-inline-block align-text-top" href="{% url 'login' %}">Not logged in.</a>
                         {% endif %}
-                    </ul>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'index' %}">Active Listings</a>
+                            </li>
+                            {% if user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'listings' %}">My Listings</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'watchlist' %}">My Watchlist <span class="text-light bg-dark px-2 rounded">{% block watch_num %}{% endblock watch_num %}</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'categories' %}" class="nav-link">Categories</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                                </li>
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-        {% block body %}
-        {% endblock %}
+            </nav>
+            {% block body %}
+            {% endblock %}
+              <!-- Site footer -->
+            <footer class="site-footer">
+                <div class="container">
+                <div class="row mb-4">
+                    <div class="col">
+                    <h6 class="footer-text">Quick Links</h6>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'index' %}">Active Listings</a></li>
+                        <li><a href="{% url 'listings' %}">My Listings</a></li>
+                        <li><a href="{% url 'watchlist' %}">My Watchlist</a></li>
+                    </ul>
+                    </div>
+        
+                    <div class="col">
+                    <h6 class="footer-text">Categories</h6>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'category' 4 %}">Technology</a></li>
+                        <li><a href="{% url 'category' 2 %}">Home Goods</a></li>
+                        <li><a href="{% url 'category' 9 %}">Fashion</a></li>
+                        <li><a href="{% url 'category' 3 %}">Food</a></li>
+                        <li><a href="{% url 'category' 1 %}">Sporting Goods</a></li>
+                    </ul>
+                    </div>
+                </div>
+                <hr>
+                </div>
+        </footer>
+        </div>
         <script>
             function submitForm(id)   {
                 document.getElementById(id).submit();

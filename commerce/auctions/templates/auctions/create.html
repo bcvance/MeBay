@@ -6,28 +6,33 @@
 
 {% block body %} 
 
-{% load crispy_forms_tags %} 
-    <h2>Create Listing</h2>
-    <form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <!-- <p>Item Name: </p><input type="text" name="name" placeholder="name">
-        <br>
-        <p>Item Description: </p><textarea name="desc" cols="30" rows="10" placeholder="description"></textarea>
-        <br>
-        <p>Starting Bid: </p><input type="text" name="starting_bid" placeholder="starting bid">
-        <br>
-        <p>Image: </p><input type="file" name="image" accept="image/*">
-        <br>
-        <p>Category: </p><input type="text" name="category" placeholder="category" list="category" multiple>
-        <datalist id="category">
-            <option value="sporting_goods">Sporting Goods</option>
-            <option value="home_goods">Home Goods</option>
-            <option value="literature">Literature</option>
-            <option value="video_games">Video Games</option>
-        </datalist>
-        <br>
-        <input type="submit"> -->
-        {{form|crispy}}
-            <button class="btn btn-dark my-4" type="submit">Submit</button>
-    </form>
+{% load crispy_forms_tags %}
+<h2 class="page-name">Create Listing</h2>
+<div class="form-div">
+    <div class="inner-form-div">
+        <form id="create-form" action="{% url 'create' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- <p>Item Name: </p><input type="text" name="name" placeholder="name">
+            <br>
+            <p>Item Description: </p><textarea name="desc" cols="30" rows="10" placeholder="description"></textarea>
+            <br>
+            <p>Starting Bid: </p><input type="text" name="starting_bid" placeholder="starting bid">
+            <br>
+            <p>Image: </p><input type="file" name="image" accept="image/*">
+            <br>
+            <p>Category: </p><input type="text" name="category" placeholder="category" list="category" multiple>
+            <datalist id="category">
+                <option value="sporting_goods">Sporting Goods</option>
+                <option value="home_goods">Home Goods</option>
+                <option value="literature">Literature</option>
+                <option value="video_games">Video Games</option>
+            </datalist>
+            <br>
+            <input type="submit"> -->
+            {{form|crispy}}
+                <button class="btn btn-dark my-4" type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
 {% endblock %}

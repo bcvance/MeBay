@@ -7,51 +7,58 @@
 {% block body %}
     <h2>{{ category.name }}</h2>
     {% if listings_list %} 
+    <div class="container">
         {% for listing in listings_list %} 
-        <div class="card border-light mb-3" style="max-width: 540px;">
-            <div class="row g-0">
-              <div class="col-md-4">
-                  <form id="listing_card_{{ listing.id }}" action="{% url 'listing' listing.id %}">
-                  </form>
-                <img src="{{ listing.image.url }}" class="img-fluid rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ listing.id }}')">
-              </div>
-              <div class="col-md-8">
-                    <div class="card-body">
-                        <form action="{% url 'listing' listing.id %}">
-                            <button type="submit" class="text-button card-item-name">{{ listing.name }}</button>
-                        </form>
-                        {% if not listing.highest_bid %}
-                            <p class="card-text font-weight-bold">No Bids Yet, Bids Starting at ${{ listing.price }}</p>
-                        {% else %}
-                            <p class="card-text font-weight-bold">Current Highest Bid: ${{ listing.highest_bid }}</p>
-                        {% endif %}
-                        <p class="card-text">{{ listing.desc }}</p>
-                        <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
-                        {% if user.is_authenticated %}
-                        <div class="bottom-btns">
-                                {% if listing.poster.username == user.username %}
-                                    <a href="{% url 'listings' %}" class="bottom-btn text-button">Go to My Listings</a>
-                                {% else %}
-                                    {% if not listing.watchlist %}
-                                        <form method="post" action="watch_add">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                            <button type="submit" class="text-button" id="delete_btn">Add to Watchlist</button>
-                                        </form>
-                                    {% else %}
-                                    <form method="post" action="watch_del">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                        <button type="submit" class="text-button" id="delete_btn">Remove From Watchlist</button>
+            {% if forloop.first %} <div class="row"> {% endif %}
+                <div class="col-md-6">
+                    <div class="card border-light mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col">
+                                <form id="listing_card_{{ listing.id }}" action="{% url 'listing' listing.id %}">
+                                </form>
+                                <img src="{{ listing.image.url }}" class="index-image rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ listing.id }}')">
+                            </div>
+                            <div class="col">
+                                <div class="card-body">
+                                    <form action="{% url 'listing' listing.id %}">
+                                        <button type="submit" class="text-button card-item-name">{{ listing.name }}</button>
                                     </form>
+                                    {% if not listing.highest_bid %}
+                                        <p class="card-text font-weight-bold">No Bids Yet, Bids Starting at ${{ listing.price }}</p>
+                                    {% else %}
+                                        <p class="card-text font-weight-bold">Current Highest Bid: ${{ listing.highest_bid }}</p>
                                     {% endif %}
-                                {% endif %}
+                                    <p class="card-text">{{ listing.desc }}</p>
+                                    <p class="card-text"><small class="text-muted">Posted {{ listing.list_date }} by {{ listing.poster }}</small></p>
+                                    {% if user.is_authenticated %}
+                                        <div class="bottom-btns">
+                                            {% if listing.poster.username == user.username %}
+                                                <a href="{% url 'listings' %}" class="bottom-btn text-button">Go to My Listings</a>
+                                            {% else %}
+                                                {% if not listing.watchlist %}
+                                                    <form method="post" action="watch_add">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                                        <button type="submit" class="text-button" id="delete_btn">Add to Watchlist</button>
+                                                    </form>
+                                                {% else %}
+                                                <form method="post" action="watch_del">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                                    <button type="submit" class="text-button" id="delete_btn">Remove From Watchlist</button>
+                                                </form>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                        {% endif %}
                     </div>
                 </div>
-            </div>
-        </div>
+                {% if forloop.counter|divisibleby:2 %}</div><div class="row">{% endif %}
+                {% if forloop.last %}</div>{% endif %}
             {% endfor %}
+    </div>
         {% endif %}
 {% endblock %}

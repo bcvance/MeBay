@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
+    <div class="container listing-container">
+        <div class="row listing-row">
             <div class="col">
                 <img class="listing_img" src="{{ listing.image.url }}" alt="item image">
             </div>
             <div class="col listing">
-                <h5>{{listing.name}}</h5>
+                <h4>{{listing.name}}</h4>
                 <hr>
                 <p><small class="text-muted">Item Description</small></p>
                 <p>{{ listing.desc }}</p>
@@ -40,26 +40,26 @@
                         {% else %}
                             <p class="text-muted">This Listing Has Closed</p>
                         {% endif %}
-                        <p><a href="{% url 'listings' %}" class="bottom-btn">Go to My Listings</a></p>
+                        <p><a href="{% url 'listings' %}" class="a-btn">Go to My Listings</a></p>
                     {% else %}
                         {% if listing.active %}
                             <form action="{% url 'bid' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="listing_id" value="{{ listing.id }}">
                                 <input type="text" name="bid_amount" placeholder="Type Bid Amount">
-                                <button class="btn btn-dark my-4" type="submit">Submit Bid</button>
+                                <button class="btn btn-dark my-3 mx-2" type="submit">Submit Bid</button>
                             </form>
                             {% if not watchlist %}
                                 <form method="post" action="{% url 'watch_add' %}">
                                     {% csrf_token %}
                                     <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                    <button type="submit" class="btn btn-dark">Add to Watchlist</button>
+                                    <button type="submit" class="btn btn-info">Add to Watchlist</button>
                                 </form>
                             {% else %}
                                 <form method="post" action="watch_del">
                                     {% csrf_token %}
                                     <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                    <button type="submit" class="btn btn-dark" id="delete_btn">Remove From Watchlist</button>
+                                    <button type="submit" class="btn btn-info" id="delete_btn">Remove From Watchlist</button>
                                 </form>
                             {% endif %}
                         {% else %}
@@ -89,7 +89,7 @@
                         {% for comment in comments %}
                         <div class="media">
                             <!-- profile image: <img src="https://placehold.it/64x64" alt=""> -->
-                            <div class="media-body">
+                            <div class="media-body mx-3">
                                 <p>{{ comment.poster }}</p>
                                 <p>
                                     {{ comment.content }}
@@ -107,7 +107,7 @@
                             <label for="comment">Your Comment:</label>
                             <textarea class="form-control" placeholder="Write Your Comment Here" id="comment" name="comment" rows="5" style="width: 60%;"required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-dark">Submit</button>
+                        <button type="submit" class="btn btn-secondary">Submit</button>
                     </form>
                     {% endif %}
                 </section>

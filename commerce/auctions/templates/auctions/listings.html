@@ -29,12 +29,12 @@
 
                         <div class="card mb-3" style="max-width: 540px;">
                             <div class="row g-0">
-                                <div class="col-md-4">
+                                <div class="col">
                                     <form id="listing_card_{{ listing.id }}" action="{% url 'listing' listing.id %}">
                                     </form>
-                                    <img src="{{ listing.image.url }}" class="img-fluid rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ listing.id }}')">
+                                    <img src="{{ listing.image.url }}" class="rounded-start index_listing_img index-image" alt="..." onclick="submitForm('listing_card_{{ listing.id }}')">
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col">
                                     <div class="card-body">
                                         <form action="{% url 'listing' listing.id %}">
                                             <button type="submit" class="card-item-name text-button">{{ listing.name }}</button>
@@ -50,15 +50,15 @@
                                             <form method="post" action="delete">
                                                 {% csrf_token %}
                                                 <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                                                <button type="submit" class="btn btn-dark" id="delete_btn">Delete Listing</button>
+                                                <button type="submit" class="btn btn-info" id="delete_btn">Delete Listing</button>
                                             </form>
                                         {% endif %}
                                     </div>
                                 </div>
                             </div>
                         </div>
-                </div>
                 {% endif %}
+                </div>
                 <div class="col">
                     {% if win == -1 %}
                         <h3>You have no wins.</h3>
@@ -83,7 +83,6 @@
                     {% endif %}
                 </div>
             </div>
-
         {% endfor %}
     </div>
         </div>

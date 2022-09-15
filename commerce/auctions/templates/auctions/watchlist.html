@@ -6,43 +6,52 @@
 
 
 {% block body %}
-    <h5>My Watchlist Items</h5>
-    {% if watch_items_list %} 
+<h2 class="page-name">My Watchlist Items</h2>
+    {% if watch_items_list == -1%} 
+        <h5 style="text-align: center; color: gray;">You are not watching any items.</h5>
+    {% else %} 
+        <div class="container">
             {% for watch_item, price in watch_items_list %} 
-            <div class="card border-light mb-3" style="max-width: 540px;">
-                <div class="row g-0">
-                <div class="col-md-4">
-                    <form id="listing_card_{{ watch_item.item.id }}" action="{% url 'listing' watch_item.item.id %}">
-                    </form>
-                    <img src="{{ watch_item.item.image.url }}" class="img-fluid rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ watch_item.item.id }}')">
-                </div>
-                <div class="col-md-8">
-                        <div class="card-body">
-                            <form action="{% url 'listing' watch_item.item.id %}">
-                                <button type="submit" class="card-item-name text-button">{{ watch_item.item.name }}</button>
-                            </form>
-                            {% if not watch_item.item.top_bidder %}
-                                <p class="card-text font-weight-bold">No Bids Yet, Bids Starting at ${{ price }}</p>
-                            {% endif %}
-                            <p class="card-text">{{ watch_item.item.desc }}</p>
-                            <p class="card-text"><small class="text-muted">Posted {{ watch_item.item.list_date }} by {{ watch_item.item.poster }}</small></p>
-                            {% if user.is_authenticated %}
-                            <div class="bottom-btns">
-                                    {% if watch_item.item.poster.username == user.username %}
-                                        <a href="{% url 'listings' %}" class="bottom-btn">Go to My Listings</a>
-                                    {% else %}
-                                    <form method="post" action="watch_del">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="listing_id" value="{{ watch_item.item.id }}">
-                                        <button type="submit" class="btn btn-dark my-2" id="delete_btn">Remove From Watchlist</button>
+                {% if forloop.first %} <div class="row"> {% endif %}
+                    <div class="col md-6">
+                        <div class="card border-light mb-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <form id="listing_card_{{ watch_item.item.id }}" action="{% url 'listing' watch_item.item.id %}">
                                     </form>
-                                    {% endif %}
+                                    <img src="{{ watch_item.item.image.url }}" class="rounded-start index_listing_img index-image" alt="..." onclick="submitForm('listing_card_{{ watch_item.item.id }}')">
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <form action="{% url 'listing' watch_item.item.id %}">
+                                            <button type="submit" class="card-item-name text-button">{{ watch_item.item.name }}</button>
+                                        </form>
+                                        {% if not watch_item.item.top_bidder %}
+                                            <p class="card-text font-weight-bold">No Bids Yet, Bids Starting at ${{ price }}</p>
+                                        {% endif %}
+                                        <p class="card-text">{{ watch_item.item.desc }}</p>
+                                        <p class="card-text"><small class="text-muted">Posted {{ watch_item.item.list_date }} by {{ watch_item.item.poster }}</small></p>
+                                        {% if user.is_authenticated %}
+                                            <div class="bottom-btns">
+                                                {% if watch_item.item.poster.username == user.username %}
+                                                    <a href="{% url 'listings' %}" class="bottom-btn">Go to My Listings</a>
+                                                {% else %}
+                                                    <form method="post" action="watch_del">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="listing_id" value="{{ watch_item.item.id }}">
+                                                        <button type="submit" class="btn btn-info my-2" id="delete_btn">Remove From Watchlist</button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
-                            {% endif %}
                         </div>
                     </div>
-                </div>
-            </div>
-                {% endfor %}
-            {% endif %}
+                {% if forloop.counter|divisibleby:2 %}</div><div class="row">{% endif %}
+                {% if forloop.last %}</div>{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}

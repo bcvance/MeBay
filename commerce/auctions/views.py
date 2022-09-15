@@ -58,9 +58,10 @@ def bid(request):
 
 def categories(request):
     categories_list = list(Category.objects.all())
+    categories_counts = [category.listings.all().count() for category in categories_list]
     watch_items = get_num_watch_items(request)
     return render(request, "auctions/categories.html", context={
-        "categories_list": categories_list,
+        "categories_list": zip(categories_list, categories_counts),
         "watch_items": watch_items
     })
 
@@ -232,7 +233,7 @@ def watchlist(request):
         prices_formatted.append(format_price(bid_string))
     watch_items = get_num_watch_items(request)
     return render(request, "auctions/watchlist.html", context={
-        "watch_items_list": zip(watch_items_list, prices_formatted),
+        "watch_items_list": zip(watch_items_list, prices_formatted) if watch_items_list else -1,
         "watch_items": watch_items
     })
 

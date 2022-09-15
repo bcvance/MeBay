@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2 class="page-name">Active Listings</h2>
     {% if message %}
         {% for message in messages %}
         <div class="alert alert-success" role="alert">
@@ -15,7 +15,7 @@
     {% endif %}
 
     {% if listings %} 
-        <div class="container">
+        <div class="container mb-4">
             {% for listing in listings %} 
                 {% if forloop.first %} <div class="row"> {% endif %}
                 <div class="col-md-6">
@@ -24,7 +24,7 @@
                             <div class="col">
                                 <form id="listing_card_{{ listing.listing.id }}" action="{% url 'listing' listing.listing.id %}">
                                 </form>
-                                <img class="index-image" src="{{ listing.listing.image.url }}" class="rounded-start index_listing_img" alt="..." onclick="submitForm('listing_card_{{ listing.listing.id }}')">
+                                <img src="{{ listing.listing.image.url }}" class="rounded-start index_listing_img index-image" alt="..." onclick="submitForm('listing_card_{{ listing.listing.id }}')">
                             </div>
                             <div class="col">
                                     <div class="card-body">
@@ -41,19 +41,19 @@
                                         {% if user.is_authenticated %}
                                         <div class="bottom-btns">
                                                 {% if listing.listing.poster.username == user.username %}
-                                                    <a href="{% url 'listings' %}" class="bottom-btn text-button">Go to My Listings</a>
+                                                    <a href="{% url 'listings' %}" class="bottom-btn a-button">Go to My Listings</a>
                                                 {% else %}
                                                     {% if not listing.watchlist %}
                                                         <form method="post" action="watch_add">
                                                             {% csrf_token %}
                                                             <input type="hidden" name="listing_id" value="{{ listing.listing.id }}">
-                                                            <button type="submit" class="text-button" id="delete_btn">Add to Watchlist</button>
+                                                            <button type="submit" class="btn btn-info my-2" id="delete_btn">Add to Watchlist</button>
                                                         </form>
                                                     {% else %}
                                                     <form method="post" action="watch_del">
                                                         {% csrf_token %}
                                                         <input type="hidden" name="listing_id" value="{{ listing.listing.id }}">
-                                                        <button type="submit" class="text-button" id="delete_btn">Remove From Watchlist</button>
+                                                        <button type="submit" class="btn btn-info my-2" id="delete_btn">Remove From Watchlist</button>
                                                     </form>
                                                 {% endif %}
                                             {% endif %}
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                 </div>
-                {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}
+                {% if forloop.counter|divisibleby:2 %}</div><div class="row">{% endif %}
                 {% if forloop.last %}</div>{% endif %}    
             {% endfor %}
         </div>

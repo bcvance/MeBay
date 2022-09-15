@@ -32,7 +32,7 @@ class Listing(models.Model):
     top_bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "winning", blank=True, null=True, default="")
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "listings")
     starting_bid = models.DecimalField(max_digits=15, decimal_places=2, default=0.0)
-    name = models.CharField(max_length=64, default="Unnamed Listing")
+    name = models.CharField(max_length=64, default="")
     desc = models.CharField(max_length=500, blank=True, null=True, default="")
     image = models.ImageField(upload_to=image_directory_path, storage=image_storage, null=True)
     categories = models.ManyToManyField(Category, related_name="listings")

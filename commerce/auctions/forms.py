@@ -8,7 +8,10 @@ class ListingForm(forms.ModelForm):
         model = Listing
         fields = ("name", "desc", "starting_bid", "image", "categories")
         widgets = {
-            "desc": forms.Textarea(attrs={"cols": 40, "rows": 10})
+            "name": forms.TextInput(attrs={"placeholder":"Name", "required":True}),
+            "desc": forms.Textarea(attrs={"cols": 40, "rows": 10}),
+            "starting_bid": forms.NumberInput(attrs={"required":True}),
+            "image": forms.FileInput(attrs={"required":True}),
         }
 
 class CreateUserForm(UserCreationForm):

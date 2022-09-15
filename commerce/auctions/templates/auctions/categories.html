@@ -5,10 +5,14 @@
 {% endblock %}
 
 {% block body %}
-    <h2>Categories</h2>
-    {% for category in categories_list %}
-        <ul>
-            <li><a href="{% url 'category' category.id %}">{{ category.name }}</a></li>
-        </ul>
-    {% endfor %}
+<div class="form-div">
+    <div class="inner-form-div">
+        <h2 class="page-name">Categories</h2>
+        {% for category, count in categories_list %}
+            <ul>
+                <li><a href="{% url 'category' category.id %}">{{ category.name }} ({{ count }})</a></li>
+            </ul>
+        {% endfor %}
+    </div>
+</div>
 {% endblock %}
